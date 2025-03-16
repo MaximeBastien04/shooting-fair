@@ -15,6 +15,7 @@ public class GunScript : MonoBehaviour
 
     // UI
     [SerializeField] private TextMeshProUGUI bulletAmountText;
+    [SerializeField] private TextMeshProUGUI reloadMessage;
     [SerializeField] private Image bulletStateImage;
     [SerializeField] private Sprite bulletAvailable;
     [SerializeField] private Sprite bulletUnavailable;
@@ -24,22 +25,24 @@ public class GunScript : MonoBehaviour
         Debug.Log(currentBulletAmount);
         originalPosition = transform.localPosition;
         bulletAmountText.text = currentBulletAmount + "/" + maxBullets;
-
+        reloadMessage.gameObject.SetActive(false);
     }
-
 
     void Update()
     {
+        Reload();
 
         // Shooting rate
         if (Input.GetMouseButton(0) && currentBulletAmount > 0)
         {
             Shoot();
         }
-        
+
+        // Change bullet sprite when no bullets are available
         if (currentBulletAmount <= 0)
         {
             bulletStateImage.sprite = bulletUnavailable;
+            reloadMessage.gameObject.SetActive(true);
         }
     }
 
@@ -70,6 +73,17 @@ public class GunScript : MonoBehaviour
             currentBulletAmount--;
             bulletAmountText.text = currentBulletAmount + "/" + maxBullets;
             Destroy(bullet, 3f); // Destroy the bullet after 3 seconds to save memory
+        }
+    }
+
+    private void Reload()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            currentBulletAmount = maxBullets;
+            bulletAmountText.text = currentBulletAmount + "/" + maxBullets;
+            bulletStateImage.sprite = bulletAvailable;
+            reloadMessage.gameObject.SetActive(false);
         }
     }
 }
