@@ -17,9 +17,7 @@ public class Example : MonoBehaviour
     void Update()
     {
         Look();
-        // if (Input.GetMouseButtonDown(1)) {
-            gunScript.FocusGun();
-        // }
+        gunScript.FocusGun();
     }
 
     // Mouse movement 
