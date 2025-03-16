@@ -1,4 +1,6 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GunScript : MonoBehaviour
 {
@@ -7,16 +9,22 @@ public class GunScript : MonoBehaviour
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform firePoint;
     [SerializeField] private float bulletSpeed = 20f;
-    // [SerializeField] private float fireRate = 2f;
-    // [SerializeField] private float nextFireTime = 2f;
 
     private int currentBulletAmount = 8;
     private int maxBullets = 8;
+
+    // UI
+    [SerializeField] private TextMeshProUGUI bulletAmountText;
+    [SerializeField] private Image bulletStateImage;
+    [SerializeField] private Sprite bulletAvailable;
+    [SerializeField] private Sprite bulletUnavailable;
 
     void Start()
     {
         Debug.Log(currentBulletAmount);
         originalPosition = transform.localPosition;
+        bulletAmountText.text = currentBulletAmount + "/" + maxBullets;
+
     }
 
 
@@ -24,10 +32,14 @@ public class GunScript : MonoBehaviour
     {
 
         // Shooting rate
-        if (Input.GetMouseButton(0) && currentBulletAmount > 0) // Left mouse button
+        if (Input.GetMouseButton(0) && currentBulletAmount > 0)
         {
             Shoot();
-            // nextFireTime = Time.time + fireRate;
+        }
+        
+        if (currentBulletAmount <= 0)
+        {
+            bulletStateImage.sprite = bulletUnavailable;
         }
     }
 
@@ -52,11 +64,11 @@ public class GunScript : MonoBehaviour
             Rigidbody rb = bullet.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                rb.linearVelocity = firePoint.forward * bulletSpeed; // Move the bullet forward
+                rb.linearVelocity = firePoint.forward * bulletSpeed;
             }
 
             currentBulletAmount--;
-            Debug.Log(currentBulletAmount);
+            bulletAmountText.text = currentBulletAmount + "/" + maxBullets;
             Destroy(bullet, 3f); // Destroy the bullet after 3 seconds to save memory
         }
     }
